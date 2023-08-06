@@ -1,7 +1,11 @@
-import Settings from "./pages/settings/Settings";
+import Appbar from "./components/Appbar/Appbar";
 
 function Dashboard() {
-  return <Settings />;
+  return (
+    <>
+      <Appbar />
+    </>
+  );
 }
 
 export default Dashboard;

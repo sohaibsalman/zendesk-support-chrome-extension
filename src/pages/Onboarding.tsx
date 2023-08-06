@@ -9,7 +9,10 @@ interface Props {
 
 function OnboardingPage({ onLogin }: Props) {
   return (
-    <div className="d-flex flex-direction-col align-items-center">
+    <div
+      className="d-flex flex-direction-col align-items-center justify-center"
+      style={{ height: "100%" }}
+    >
       <img
         src="./assets/images/logo.svg"
         alt="right-page-logo"

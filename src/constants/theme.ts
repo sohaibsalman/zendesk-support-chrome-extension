@@ -4,11 +4,11 @@ import { colors } from "./colors";
 const customTheme: ThemeConfig = {
   components: {
     Button: {
-      colorPrimary: colors.pruple.default,
-      colorBorder: colors.pruple.default,
-      colorText: colors.pruple.default,
-      colorPrimaryHover: colors.pruple.hover,
-      colorPrimaryActive: colors.pruple.pressed,
+      colorPrimary: colors.purple.default,
+      colorBorder: colors.purple.default,
+      colorText: colors.purple.default,
+      colorPrimaryHover: colors.purple.hover,
+      colorPrimaryActive: colors.purple.pressed,
       controlHeight: 40,
     },
   },

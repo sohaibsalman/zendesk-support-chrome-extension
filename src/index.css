@@ -3,10 +3,7 @@ body {
 }
 
 .main {
-    min-height: 500px;
+    height: 500px;
     width: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin: 0 auto;
 }
