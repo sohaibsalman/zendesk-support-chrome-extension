@@ -7,3 +7,20 @@ body {
     width: 400px;
     margin: 0 auto;
 }
+
+
+.ant-tabs .ant-tabs-tab .anticon {
+    margin-right: 0;
+}
+
+.ant-tabs-nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ant-tabs-tab {
+    width: 50%;
+    justify-content: center;
+}
