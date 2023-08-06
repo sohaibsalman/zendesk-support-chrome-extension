@@ -1,11 +1,11 @@
-body { 
-    background-color: #F5F5F6;
+* {
+    margin: 0;
 }
-
 .main {
     height: 500px;
     width: 400px;
     margin: 0 auto;
+    position: relative;
 }
 
 
@@ -23,4 +23,8 @@ body {
 .ant-tabs-tab {
     width: 50%;
     justify-content: center;
+}
+
+.ant-tabs-nav {
+    padding: 0 50px;
 }

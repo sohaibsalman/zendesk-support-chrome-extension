@@ -12,6 +12,7 @@ function AppButton(props: Props) {
 
   if (colorType === colorTypes.purple) color = colors.purple;
   else if (colorType === colorTypes.yellow) color = colors.yellow;
+  else if (colorType === colorTypes.gray) color = colors.grayed;
 
   const theme: ThemeConfig = {
     components: {
@@ -28,7 +29,7 @@ function AppButton(props: Props) {
   return (
     <>
       <ConfigProvider theme={theme}>
-        <Button {...props} style={{ color: textColor }}>
+        <Button {...props} style={{ ...props.style, color: textColor }}>
           {props.children}
         </Button>
       </ConfigProvider>

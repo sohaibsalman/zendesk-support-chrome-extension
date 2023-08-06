@@ -17,6 +17,10 @@ const customTheme: ThemeConfig = {
       colorPrimaryHover: colors.purple.hover,
       colorPrimaryActive: colors.purple.pressed,
     },
+    Typography: {
+      colorTextHeading: colors.gray[500],
+      titleMarginBottom: 5,
+    },
   },
 };
 

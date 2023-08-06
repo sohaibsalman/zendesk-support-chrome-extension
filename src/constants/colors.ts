@@ -9,6 +9,11 @@ export const colors = {
     hover: "#FFE60D",
     pressed: "#D19E00",
   },
+  grayed: {
+    default: "#5B5B5F",
+    hover: "#AEAEB2",
+    pressed: "#5B5B5F",
+  },
   gray: {
     500: "#5B5B5F",
     900: "#1E1E1F",
