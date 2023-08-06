@@ -3,7 +3,11 @@ import Title from "antd/es/typography/Title";
 
 import { colors } from "../constants/colors";
 
-function OnboardingPage() {
+interface Props {
+  onLogin: () => void;
+}
+
+function OnboardingPage({ onLogin }: Props) {
   return (
     <div className="d-flex flex-direction-col align-items-center">
       <img
@@ -18,7 +22,7 @@ function OnboardingPage() {
         <Button type="primary" block style={{ marginBottom: 10 }}>
           Create a new account
         </Button>
-        <Button type="default" block>
+        <Button type="default" block onClick={onLogin}>
           Login your account
         </Button>
       </div>
