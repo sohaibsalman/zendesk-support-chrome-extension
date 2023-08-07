@@ -6,7 +6,7 @@ import { colorTypes, colors } from "../../constants/colors";
 
 function Appbar() {
   return (
-    <div className="appbar" style={{ padding: "10px 20px" }}>
+    <div className="appbar" style={{ padding: "15px 30px" }}>
       <Row>
         <Col span={16} style={{ alignSelf: "center" }}>
           <img

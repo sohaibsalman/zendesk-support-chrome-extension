@@ -15,8 +15,7 @@ function App() {
   return (
     <div className="main">
       <ConfigProvider theme={customTheme}>
-        {/* {isLoggedIn ? <Dashboard /> : <OnboardingPage onLogin={handleLogin} />} */}
-        <Dashboard />
+        {isLoggedIn ? <Dashboard /> : <OnboardingPage onLogin={handleLogin} />}
       </ConfigProvider>
     </div>
   );

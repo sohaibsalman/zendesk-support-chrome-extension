@@ -26,8 +26,8 @@ function AppNavigation() {
     return {
       label: (
         <div className="d-flex flex-direction-col align-items-center">
-          <div style={{ fontSize: 32 }}>{link.icon}</div>
-          {link.label}
+          <span style={{ fontSize: 25 }}>{link.icon}</span>
+          <span style={{ marginTop: -3 }}>{link.label}</span>
         </div>
       ),
       key: link.label,

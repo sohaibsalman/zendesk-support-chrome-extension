@@ -19,7 +19,16 @@ const customTheme: ThemeConfig = {
     },
     Typography: {
       colorTextHeading: colors.gray[500],
-      titleMarginBottom: 5,
+      titleMarginBottom: 0,
+      fontSizeHeading5: 13,
+    },
+    Switch: {
+      colorPrimary: colors.green.default,
+      colorPrimaryHover: colors.green.hover,
+    },
+    Input: {
+      borderRadius: 4,
+      borderRadiusLG: 4,
     },
   },
 };

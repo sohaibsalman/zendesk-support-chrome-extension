@@ -14,7 +14,13 @@ export const colors = {
     hover: "#AEAEB2",
     pressed: "#5B5B5F",
   },
+  green: {
+    default: "#00A878",
+    hover: "#2FD89E",
+    pressed: "#007C5C",
+  },
   gray: {
+    400: "#86878A",
     500: "#5B5B5F",
     900: "#1E1E1F",
   },

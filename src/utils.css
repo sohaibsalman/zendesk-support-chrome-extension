@@ -13,3 +13,43 @@
 .align-items-center {
     align-items: center;
 }
+
+.mb-xs {
+    margin-bottom: 5px;
+}
+
+.mb-sm {
+    margin-bottom: 10px;
+}
+
+.mb-md {
+    margin-bottom: 20px;
+}
+
+.mb-lg {
+    margin-bottom: 30px;
+}
+
+.mb.xl {
+    margin-bottom: 50px;
+}
+
+.mt-xs {
+    margin-top: 5px;
+}
+
+.mt-sm {
+    margin-top: 10px;
+}
+
+.mt-md {
+    margin-top: 20px;
+}
+
+.mt-lg {
+    margin-top: 30px;
+}
+
+.mt.xl {
+    margin-top: 50px;
+}
