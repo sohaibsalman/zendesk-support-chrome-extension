@@ -24,6 +24,12 @@ export const colors = {
     500: "#5B5B5F",
     900: "#1E1E1F",
   },
+  warning: {
+    600: "#BB6802",
+  },
+  error: {
+    600: "#E50000",
+  },
 };
 
 export enum colorTypes {

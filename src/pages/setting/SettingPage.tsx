@@ -1,19 +1,40 @@
 import { useState } from "react";
 import {
+  CheckOutlined,
   InfoCircleOutlined,
   ReloadOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
 import { Input, Row, Switch, Tooltip, Typography } from "antd";
+import Icon from "@ant-design/icons";
 
 import { colorTypes, colors } from "../../constants/colors";
 import AppButton from "../../components/Buttons/AppButton";
 import { appConstants } from "../../constants/appContants";
+import ProcesingIcon from "../../icons/processing";
+import AppAlert from "../../components/AppAlert/AppAlert";
 
 function SettingPage() {
   const [draftTemplate, setDraftTemplate] = useState(
     appConstants.defaultTemplate
   );
+  const [helpCenterUrl, setHelpCenterUrl] = useState<boolean | null>(false);
+
+  const renderedHelpCenterUrlState =
+    helpCenterUrl === null ? null : helpCenterUrl ? (
+      <div
+        className="d-flex align-items-center"
+        style={{ marginLeft: 10, color: colors.green.default }}
+      >
+        <CheckOutlined style={{ marginRight: 5, fontSize: 20 }} /> Available
+      </div>
+    ) : (
+      <div className="d-flex align-items-center" style={{ marginLeft: 10 }}>
+        <Icon component={ProcesingIcon} style={{ marginRight: 5, width: 20 }} />
+        Processing
+      </div>
+    );
+
   return (
     <>
       <Row>
@@ -24,7 +45,12 @@ function SettingPage() {
           </Tooltip>
         </Row>
         <Row>
-          <Input size="large" placeholder="Enter URL here..." />
+          <Input
+            size="large"
+            placeholder="Enter URL here..."
+            style={{ width: "65%" }}
+          />
+          {renderedHelpCenterUrlState}
         </Row>
       </Row>
       <Row>
@@ -69,6 +95,14 @@ function SettingPage() {
       <AppButton type="primary" icon={<SaveOutlined />} className="mt-md">
         Save settings
       </AppButton>
+
+      <AppAlert type="warning">
+        <span>
+          You can have access to dozens of settings, multiple template types,
+          and much more if your team starts using RightPage for Teams. Learn
+          more
+        </span>
+      </AppAlert>
     </>
   );
 }
