@@ -18,7 +18,7 @@ function SettingPage() {
   const [draftTemplate, setDraftTemplate] = useState(
     appConstants.defaultTemplate
   );
-  const [helpCenterUrl, setHelpCenterUrl] = useState<boolean | null>(false);
+  const [helpCenterUrl, setHelpCenterUrl] = useState<boolean | null>(null);
 
   const renderedHelpCenterUrlState =
     helpCenterUrl === null ? null : helpCenterUrl ? (

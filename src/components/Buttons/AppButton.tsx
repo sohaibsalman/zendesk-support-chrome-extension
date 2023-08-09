@@ -21,6 +21,7 @@ function AppButton(props: Props) {
         colorBorder: color.default,
         colorPrimaryHover: color.hover,
         colorPrimaryActive: color.pressed,
+        colorText: color.default,
         controlHeight: 40,
       },
     },

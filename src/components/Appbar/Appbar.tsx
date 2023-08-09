@@ -6,7 +6,7 @@ import { colorTypes, colors } from "../../constants/colors";
 
 function Appbar() {
   return (
-    <div className="appbar" style={{ padding: "15px 0px 15px 30px" }}>
+    <div className="appbar" style={{ padding: "15px 30px" }}>
       <Row>
         <div style={{ flexGrow: 1, alignSelf: "center" }}>
           <img

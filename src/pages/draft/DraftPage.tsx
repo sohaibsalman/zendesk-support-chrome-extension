@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FormOutlined,
   InfoCircleOutlined,
@@ -10,8 +11,15 @@ import AppButton from "../../components/Buttons/AppButton";
 import TicketCommentList from "./TicketCommentList";
 import { TicketComment } from "../../models/ticket-comment";
 import AppAlert from "../../components/AppAlert/AppAlert";
+import DraftGeneration from "./DraftGeneration";
 
 function DraftPage() {
+  const [isDraftGenerating, setIsDraftGenerating] = useState(false);
+
+  if (isDraftGenerating) {
+    return <DraftGeneration onReturn={() => setIsDraftGenerating(false)} />;
+  }
+
   return (
     <>
       <Row>
@@ -47,7 +55,12 @@ function DraftPage() {
       <Row>
         <Input placeholder="Type instructions here..." />
       </Row>
-      <AppButton type="primary" icon={<FormOutlined />} className="mt-md">
+      <AppButton
+        type="primary"
+        icon={<FormOutlined />}
+        className="mt-md"
+        onClick={() => setIsDraftGenerating(true)}
+      >
         Write Draft
       </AppButton>
       <AppAlert type="warning">
