@@ -6,25 +6,23 @@ import { colorTypes, colors } from "../../constants/colors";
 
 function Appbar() {
   return (
-    <div className="appbar" style={{ padding: "15px 30px" }}>
+    <div className="appbar" style={{ padding: "15px 0px 15px 30px" }}>
       <Row>
-        <Col span={16} style={{ alignSelf: "center" }}>
+        <div style={{ flexGrow: 1, alignSelf: "center" }}>
           <img
             src="./assets/images/logo-inline.svg"
             alt="right-page-logo"
             style={{ width: 150 }}
           />
-        </Col>
-        <Col span={8}>
-          <AppButton
-            type="primary"
-            icon={<GiftOutlined />}
-            textColor={colors.gray[900]}
-            colorType={colorTypes.yellow}
-          >
-            Earn points
-          </AppButton>
-        </Col>
+        </div>
+        <AppButton
+          type="primary"
+          icon={<GiftOutlined />}
+          textColor={colors.gray[900]}
+          colorType={colorTypes.yellow}
+        >
+          Earn points
+        </AppButton>
       </Row>
     </div>
   );

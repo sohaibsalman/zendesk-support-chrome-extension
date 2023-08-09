@@ -44,14 +44,14 @@ function SettingPage() {
             <InfoCircleOutlined style={infoIconStyles} />
           </Tooltip>
         </Row>
-        <Row>
-          <Input
-            size="large"
-            placeholder="Enter URL here..."
-            style={{ width: "65%" }}
-          />
-          {renderedHelpCenterUrlState}
-        </Row>
+      </Row>
+      <Row>
+        <Input
+          size="large"
+          placeholder="Enter URL here..."
+          style={{ width: "50%", flexGrow: 1 }}
+        />
+        {renderedHelpCenterUrlState}
       </Row>
       <Row>
         <Row style={{ marginTop: 20, flexGrow: 1 }} className="mb-xs">

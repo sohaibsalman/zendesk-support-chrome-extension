@@ -25,7 +25,9 @@ export default function AppAlert({ type, children }: Props) {
       }}
     >
       <InfoCircleOutlined />
-      <Typography.Paragraph style={{ marginLeft: 10, fontSize: 10, color }}>
+      <Typography.Paragraph
+        style={{ marginLeft: 10, fontSize: 10, color, marginBottom: 0 }}
+      >
         {children}
       </Typography.Paragraph>
     </div>
