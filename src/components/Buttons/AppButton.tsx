@@ -13,6 +13,8 @@ function AppButton(props: Props) {
   if (colorType === colorTypes.purple) color = colors.purple;
   else if (colorType === colorTypes.yellow) color = colors.yellow;
   else if (colorType === colorTypes.gray) color = colors.grayed;
+  else if (colorType === colorTypes.green) color = colors.green;
+  else if (colorType === colorTypes.blue) color = colors.blue;
 
   const theme: ThemeConfig = {
     components: {
