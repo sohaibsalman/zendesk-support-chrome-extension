@@ -22,11 +22,12 @@ export default function AppAlert({ type, children }: Props) {
         padding: "10px 15px",
         marginTop: 15,
         borderRadius: 5,
+        background: "white",
       }}
     >
       <InfoCircleOutlined />
       <Typography.Paragraph
-        style={{ marginLeft: 10, fontSize: 10, color, marginBottom: 0 }}
+        style={{ marginLeft: 10, fontSize: 11, color, marginBottom: 0 }}
       >
         {children}
       </Typography.Paragraph>

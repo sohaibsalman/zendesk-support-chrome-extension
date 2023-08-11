@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-  FormOutlined,
-  InfoCircleOutlined,
-  ReloadOutlined,
-} from "@ant-design/icons";
+import { FormOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Input, Row, Tooltip, Typography } from "antd";
 
 import { colorTypes, colors } from "../../constants/colors";
@@ -12,6 +8,8 @@ import TicketCommentList from "./TicketCommentList";
 import { TicketComment } from "../../models/ticket-comment";
 import AppAlert from "../../components/AppAlert/AppAlert";
 import DraftGeneration from "./DraftGeneration";
+import Icon from "@ant-design/icons/lib/components/Icon";
+import ReloadIcon from "../../icons/reload";
 
 function DraftPage() {
   const [isDraftGenerating, setIsDraftGenerating] = useState(false);
@@ -22,7 +20,7 @@ function DraftPage() {
 
   return (
     <>
-      <Row>
+      <Row style={{ alignItems: "end" }}>
         <Row className="mb-xs" style={{ flexGrow: 1, alignItems: "center" }}>
           <Typography.Title level={5}>Ticket Comments</Typography.Title>
           <Tooltip placement="right" title="What is Help Center URL? ">
@@ -30,9 +28,9 @@ function DraftPage() {
           </Tooltip>
         </Row>
         <AppButton
-          icon={<ReloadOutlined />}
+          icon={<Icon component={ReloadIcon} />}
           colorType={colorTypes.gray}
-          textColor={colors.gray[900]}
+          textColor={colors.gray[500]}
           style={{
             padding: "5px 10px",
             height: 30,

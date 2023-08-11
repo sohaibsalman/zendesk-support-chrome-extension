@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   CheckOutlined,
   InfoCircleOutlined,
-  ReloadOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
 import { Input, Row, Switch, Tooltip, Typography } from "antd";
@@ -13,6 +12,7 @@ import AppButton from "../../components/Buttons/AppButton";
 import { appConstants } from "../../constants/appContants";
 import ProcesingIcon from "../../icons/processing";
 import AppAlert from "../../components/AppAlert/AppAlert";
+import ReloadIcon from "../../icons/reload";
 
 function SettingPage() {
   const [draftTemplate, setDraftTemplate] = useState(
@@ -47,7 +47,6 @@ function SettingPage() {
       </Row>
       <Row>
         <Input
-          size="large"
           placeholder="Enter URL here..."
           style={{ width: "50%", flexGrow: 1 }}
         />
@@ -62,9 +61,9 @@ function SettingPage() {
             </Tooltip>
           </Row>
           <AppButton
-            icon={<ReloadOutlined />}
+            icon={<Icon component={ReloadIcon} />}
             colorType={colorTypes.gray}
-            textColor={colors.gray[900]}
+            textColor={colors.gray[500]}
             onClick={() => setDraftTemplate(appConstants.defaultTemplate)}
             style={{
               padding: "5px 10px",
@@ -92,7 +91,7 @@ function SettingPage() {
         </Tooltip>
         <Switch style={{ marginLeft: 30, marginTop: 1 }} size="small" />
       </Row>
-      <AppButton type="primary" icon={<SaveOutlined />} className="mt-md">
+      <AppButton type="primary" icon={<SaveOutlined />} className="mt-sm">
         Save settings
       </AppButton>
 

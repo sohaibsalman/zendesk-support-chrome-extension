@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Row } from "antd";
 import { GiftOutlined } from "@ant-design/icons";
 
 import AppButton from "../Buttons/AppButton";
@@ -17,7 +17,7 @@ function Appbar() {
         </div>
         <AppButton
           type="primary"
-          icon={<GiftOutlined />}
+          icon={<GiftOutlined style={{ fontSize: 16, fontWeight: 600 }} />}
           textColor={colors.gray[900]}
           colorType={colorTypes.yellow}
         >

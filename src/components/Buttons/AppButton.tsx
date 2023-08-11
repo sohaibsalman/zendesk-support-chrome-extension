@@ -32,7 +32,16 @@ function AppButton(props: Props) {
   return (
     <>
       <ConfigProvider theme={theme}>
-        <Button {...props} style={{ ...props.style, color: textColor }}>
+        <Button
+          {...props}
+          style={{
+            ...props.style,
+            color: textColor,
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           {props.children}
         </Button>
       </ConfigProvider>

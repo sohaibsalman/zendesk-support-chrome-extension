@@ -21,6 +21,7 @@ const customTheme: ThemeConfig = {
       colorTextHeading: colors.gray[500],
       titleMarginBottom: 0,
       fontSizeHeading5: 13,
+      fontFamily: "Plus Jakarta Sans",
     },
     Switch: {
       colorPrimary: colors.green.default,

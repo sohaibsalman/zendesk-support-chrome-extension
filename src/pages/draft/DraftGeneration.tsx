@@ -2,7 +2,6 @@ import {
   ArrowLeftOutlined,
   CopyOutlined,
   InfoCircleOutlined,
-  ReloadOutlined,
 } from "@ant-design/icons";
 import { Input, Row, Tooltip, Typography } from "antd";
 import Icon from "@ant-design/icons";
@@ -12,6 +11,7 @@ import { colorTypes, colors } from "../../constants/colors";
 import SendIcon from "../../icons/send";
 import AppLink from "../../components/AppLink/AppLink";
 import AppAlert from "../../components/AppAlert/AppAlert";
+import ReloadIcon from "../../icons/reload";
 
 interface Props {
   onReturn: () => void;
@@ -38,9 +38,9 @@ export default function DraftGeneration({ onReturn }: Props) {
           </Tooltip>
         </Row>
         <AppButton
-          icon={<ReloadOutlined />}
+          icon={<Icon component={ReloadIcon} />}
           colorType={colorTypes.gray}
-          textColor={colors.gray[900]}
+          textColor={colors.gray[500]}
           style={{
             padding: "5px 10px",
             height: 30,
@@ -52,7 +52,7 @@ export default function DraftGeneration({ onReturn }: Props) {
         </AppButton>
       </Row>
       <Row className="mt-sm">
-        <Input.TextArea rows={7} style={{ color: colors.gray[400] }} />
+        <Input.TextArea rows={6} style={{ color: colors.gray[400] }} />
       </Row>
       <Row className="mt-sm">
         <AppButton type="primary" colorType={colorTypes.green} icon={sendIcon}>
@@ -81,7 +81,7 @@ export default function DraftGeneration({ onReturn }: Props) {
         <AppLink />
         <AppLink />
       </Row>
-      <Row>
+      <Row className="mb-md">
         <AppAlert type="warning">
           <>
             This draft could be 3x better (and generated 10x faster) if your

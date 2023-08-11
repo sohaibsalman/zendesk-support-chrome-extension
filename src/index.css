@@ -1,11 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400&display=swap');
+
 * {
     margin: 0;
 }
+
+&:root{
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+body, .ant-btn, .ant-tabs, .ant-typography, .ant-input {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+
 .main {
-    height: 500px;
-    width: 450px;
+    height: 600px;
+    width: 500px;
     margin: 0 auto;
     position: relative;
+    background: url('/public/assets/images/gradient.svg');
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 
@@ -27,6 +43,7 @@
 
 .ant-tabs-nav {
     padding: 0 50px;
+    background: rgba(255, 255, 255, 0.60);
 }
 
 .ant-tabs .ant-tabs-tab {
@@ -35,4 +52,8 @@
 
 .ant-tabs-bottom >.ant-tabs-nav {
     margin-top: 0;
+}
+
+.ant-tabs-ink-bar {
+    background-color: transparent !important;
 }

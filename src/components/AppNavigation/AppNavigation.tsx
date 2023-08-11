@@ -26,7 +26,7 @@ function AppNavigation() {
     return {
       label: (
         <div className="d-flex flex-direction-col align-items-center">
-          <span style={{ fontSize: 25 }}>{link.icon}</span>
+          <span style={{ fontSize: 22 }}>{link.icon}</span>
           <span style={{ marginTop: -3 }}>{link.label}</span>
         </div>
       ),
@@ -38,9 +38,13 @@ function AppNavigation() {
   return (
     <div
       className="app-navigation"
-      style={{ position: "absolute", bottom: 0, width: "100%" }}
+      style={{
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+      }}
     >
-      <Tabs items={renderedTabItems} tabPosition="bottom" />
+      <Tabs items={renderedTabItems} tabPosition="bottom" size="small" />
     </div>
   );
 }
