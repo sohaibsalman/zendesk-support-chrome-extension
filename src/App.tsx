@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConfigProvider } from "antd";
 
 import OnboardingPage from "./pages/Onboarding";
 import { customTheme } from "./constants/theme";
 import Dashboard from "./Dashboard";
+import { appConstants } from "./constants/appContants";
+import { getAccessToken } from "./services/storage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const authenticateUser = async () => {
+    const accessToken = await getAccessToken();
+    if (accessToken) {
+      setIsLoggedIn(true);
+    }
+  };
+
+  useEffect(() => {
+    authenticateUser();
+  }, [authenticateUser]);
+
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    chrome.tabs.create({
+      url: appConstants.webAppUrl,
+    });
   };
 
   return (

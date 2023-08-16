@@ -5,5 +5,15 @@
   "description": "Helpful AI co-pilots that provide detailed answers based on your product documentation",
   "action": {
     "default_popup": "index.html"
+  },
+  "permissions": ["tabs", "storage"],
+  "externally_connectable": {
+    "matches": [
+      "https://profound-panda-86ea4e.netlify.app/*",
+      "*://localhost/*"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }

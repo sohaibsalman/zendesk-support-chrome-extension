@@ -7,4 +7,6 @@ export const appConstants = {
 
 Best,
 {{agent name}}`,
+
+  webAppUrl: "https://profound-panda-86ea4e.netlify.app",
 };

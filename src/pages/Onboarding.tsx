@@ -27,7 +27,12 @@ function OnboardingPage({ onLogin }: Props) {
         <span style={{ color: "#EA4335" }}>e</span> Chrome
       </Title>
       <div style={{ marginTop: 70 }}>
-        <Button type="primary" block style={{ marginBottom: 10 }}>
+        <Button
+          type="primary"
+          block
+          style={{ marginBottom: 10 }}
+          onClick={onLogin}
+        >
           Create a new account
         </Button>
         <Button type="default" block onClick={onLogin}>
