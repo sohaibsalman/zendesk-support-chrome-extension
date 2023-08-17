@@ -13,6 +13,46 @@ import ReloadIcon from "../../icons/reload";
 
 function DraftPage() {
   const [isDraftGenerating, setIsDraftGenerating] = useState(false);
+  const [tickets, setTickets] = useState<TicketComment[]>([]);
+
+  const handleTicketsRefresh = () => {
+    function extractData() {
+      const container = document.querySelectorAll(
+        '[data-test-id="omni-log-container"]'
+      );
+
+      const senderNamesElements = container[0].getElementsByTagName("strong");
+      const commentElements = container[0].getElementsByClassName("zd-comment");
+
+      const result: TicketComment[] = [];
+      for (let i = 0; i < senderNamesElements.length; i++) {
+        const title = senderNamesElements[i]?.textContent ?? "";
+        const details = commentElements[i]?.textContent ?? "";
+        result.push({ title, details });
+      }
+      return result;
+    }
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const activeTab = tabs[0];
+      if (activeTab && isZendeskTicketURL(activeTab.url!)) {
+        chrome.scripting
+          .executeScript({
+            target: { tabId: activeTab.id!, allFrames: true },
+            func: extractData,
+          })
+          .then((result) => {
+            setTickets(result[0].result);
+          });
+      } else {
+      }
+    });
+  };
+
+  function isZendeskTicketURL(url: string): boolean {
+    const urlPattern = /^https:\/\/[\w.-]+\.zendesk\.com\/agent\/tickets\/\d+$/;
+    return urlPattern.test(url);
+  }
 
   if (isDraftGenerating) {
     return <DraftGeneration onReturn={() => setIsDraftGenerating(false)} />;
@@ -37,6 +77,7 @@ function DraftPage() {
             fontSize: 12,
             marginTop: 0,
           }}
+          onClick={handleTicketsRefresh}
         >
           Refresh
         </AppButton>
@@ -70,23 +111,6 @@ function DraftPage() {
     </>
   );
 }
-
-const tickets: TicketComment[] = [
-  {
-    title: "Mark S.",
-    details: `Hi,
-  I'm unable to access the Workflow Designer - I'm an in-house counsel and should have access to this, not sure what the issue is. Can you please let me know - have time-sensitive work.
-  Regards,
-  Mark SmithAndira Industries`,
-  },
-  {
-    title: "Michael B.",
-    details: `Hi,
-  I'm unable to access the Workflow Designer - I'm an in-house counsel and should have access to this, not sure what the issue is. Can you please let me know - have time-sensitive work.
-  Regards,
-  Mark SmithAndira Industries`,
-  },
-];
 
 const infoIconStyles: React.CSSProperties = {
   fontSize: 15,
