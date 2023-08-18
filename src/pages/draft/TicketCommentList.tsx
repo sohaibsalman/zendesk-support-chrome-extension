@@ -1,6 +1,5 @@
-import { Card, Typography } from "antd";
+import { Card, Empty, Typography } from "antd";
 import { TicketComment } from "../../models/ticket-comment";
-import AppAlert from "../../components/AppAlert/AppAlert";
 
 interface Props {
   data: TicketComment[];
@@ -27,13 +26,7 @@ export default function TicketCommentList({ data }: Props) {
         overflow: "auto",
       }}
     >
-      {data.length > 0 ? (
-        renderedTickets
-      ) : (
-        <AppAlert type="warning">
-          <>No ticket data found!</>
-        </AppAlert>
-      )}
+      {data.length > 0 ? renderedTickets : <Empty />}
     </div>
   );
 }

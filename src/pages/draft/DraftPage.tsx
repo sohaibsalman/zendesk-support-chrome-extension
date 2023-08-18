@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FormOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { Input, Row, Tooltip, Typography } from "antd";
+import { Input, Row, Tooltip, Typography, message } from "antd";
 
 import { colorTypes, colors } from "../../constants/colors";
 import AppButton from "../../components/Buttons/AppButton";
@@ -16,8 +16,12 @@ function DraftPage() {
   const [tickets, setTickets] = useState<TicketComment[]>([]);
 
   const handleTicketsRefresh = () => {
-    function extractData() {
-      const container = document.querySelectorAll(
+    function extractData(ticketId: string) {
+      const activeTicket = document.querySelectorAll(
+        `[data-ticket-id="${ticketId}"]`
+      );
+
+      const container = activeTicket[0].querySelectorAll(
         '[data-test-id="omni-log-container"]'
       );
 
@@ -35,16 +39,19 @@ function DraftPage() {
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
+      const currentTicketNumber = getCurrentTicketNumber(activeTab.url!);
       if (activeTab && isZendeskTicketURL(activeTab.url!)) {
         chrome.scripting
           .executeScript({
-            target: { tabId: activeTab.id!, allFrames: true },
+            target: { tabId: activeTab.id! },
             func: extractData,
+            args: [getCurrentTicketNumber(activeTab.url!)],
           })
           .then((result) => {
             setTickets(result[0].result);
           });
       } else {
+        message.error("Not a valid zendesk ticket page!");
       }
     });
   };
@@ -52,6 +59,13 @@ function DraftPage() {
   function isZendeskTicketURL(url: string): boolean {
     const urlPattern = /^https:\/\/[\w.-]+\.zendesk\.com\/agent\/tickets\/\d+$/;
     return urlPattern.test(url);
+  }
+
+  function getCurrentTicketNumber(url: string): string {
+    const urlObject = new URL(url);
+
+    const pathnameParts = urlObject.pathname.split("/");
+    return pathnameParts[pathnameParts.length - 1];
   }
 
   if (isDraftGenerating) {
