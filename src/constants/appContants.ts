@@ -9,4 +9,7 @@ Best,
 {{agent name}}`,
 
   webAppUrl: "https://profound-panda-86ea4e.netlify.app",
+  settingsSaveError: "Unable to save settings.",
+  settingsFetchError: "Unable to load settings.",
+  settingsSaveSuccess: "Settings successfully updated",
 };

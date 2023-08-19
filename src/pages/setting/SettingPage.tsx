@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckOutlined,
   InfoCircleOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
-import { Input, Row, Switch, Tooltip, Typography } from "antd";
+import { Input, Row, Switch, Tooltip, Typography, message } from "antd";
 import Icon from "@ant-design/icons";
 
 import { colorTypes, colors } from "../../constants/colors";
@@ -13,12 +13,54 @@ import { appConstants } from "../../constants/appContants";
 import ProcesingIcon from "../../icons/processing";
 import AppAlert from "../../components/AppAlert/AppAlert";
 import ReloadIcon from "../../icons/reload";
+import { agent } from "../../api/agent";
+import {
+  SettingsResponse,
+  SettingsUpdateRequest,
+} from "../../models/extension-requests";
 
 function SettingPage() {
-  const [draftTemplate, setDraftTemplate] = useState(
-    appConstants.defaultTemplate
-  );
+  const [settingsState, setSettingsState] = useState<SettingsResponse>();
+  const [defaultDraftTemplate, setDefaultDraftTemplate] = useState("");
   const [helpCenterUrl, setHelpCenterUrl] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function getSettings() {
+      try {
+        const settings = await agent.Extension.getSettings();
+        setSettingsState(settings);
+        setDefaultDraftTemplate(settings.draft_template);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getSettings();
+  }, []);
+
+  const handleSaveSettings = async () => {
+    try {
+      setIsLoading(true);
+      const updatedSettings = { ...settingsState } as SettingsUpdateRequest;
+      await agent.Extension.updateSettings(updatedSettings);
+      message.success(appConstants.settingsSaveSuccess);
+    } catch (error) {
+      console.log(error);
+      message.error(appConstants.settingsSaveError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSettingStateChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSettingsState({
+      ...(settingsState as SettingsResponse),
+      [event.target.name]: event.target.value,
+    });
+  };
 
   const renderedHelpCenterUrlState =
     helpCenterUrl === null ? null : helpCenterUrl ? (
@@ -48,7 +90,10 @@ function SettingPage() {
       <Row>
         <Input
           placeholder="Enter URL here..."
+          name="crawl_url"
+          value={settingsState?.crawl_url}
           style={{ width: "50%", flexGrow: 1 }}
+          onChange={(event) => handleSettingStateChange(event)}
         />
         {renderedHelpCenterUrlState}
       </Row>
@@ -64,7 +109,12 @@ function SettingPage() {
             icon={<Icon component={ReloadIcon} />}
             colorType={colorTypes.gray}
             textColor={colors.gray[500]}
-            onClick={() => setDraftTemplate(appConstants.defaultTemplate)}
+            onClick={() =>
+              setSettingsState({
+                ...(settingsState as SettingsResponse),
+                draft_template: defaultDraftTemplate,
+              })
+            }
             style={{
               padding: "5px 10px",
               height: 30,
@@ -77,9 +127,10 @@ function SettingPage() {
         </Row>
         <Input.TextArea
           rows={8}
-          value={draftTemplate}
+          name="draft_template"
+          value={settingsState?.draft_template}
           style={{ color: colors.gray[400] }}
-          onChange={(event) => setDraftTemplate(event.currentTarget.value)}
+          onChange={(event) => handleSettingStateChange(event)}
         />
       </Row>
       <Row style={{ marginTop: 20 }}>
@@ -89,9 +140,26 @@ function SettingPage() {
         <Tooltip placement="right" title="What is Help Center URL? ">
           <InfoCircleOutlined style={infoIconStyles} />
         </Tooltip>
-        <Switch style={{ marginLeft: 30, marginTop: 1 }} size="small" />
+        <Switch
+          style={{ marginLeft: 30, marginTop: 1 }}
+          size="small"
+          checked={settingsState?.include_links}
+          onChange={(value) => {
+            setSettingsState({
+              ...(settingsState as SettingsResponse),
+              include_links: value,
+            });
+          }}
+        />
       </Row>
-      <AppButton type="primary" icon={<SaveOutlined />} className="mt-sm">
+
+      <AppButton
+        type="primary"
+        icon={<SaveOutlined />}
+        className="mt-sm"
+        onClick={handleSaveSettings}
+        loading={isLoading}
+      >
         Save settings
       </AppButton>
 
