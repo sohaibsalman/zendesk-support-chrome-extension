@@ -21,12 +21,12 @@ export interface DraftRequest {
   session_id: string;
 }
 
-export interface DrafResponse {
-  confidence: string;
-  content: string;
-  done: boolean;
-  question: string;
-  sources: any;
+export interface DraftResponse {
+  Confidence: string;
+  Content: string;
+  Done: boolean;
+  Question: string;
+  Sources: any;
 }
 
 interface Tickets {

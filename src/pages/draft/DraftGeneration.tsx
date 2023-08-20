@@ -3,7 +3,7 @@ import {
   CopyOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Input, Row, Tooltip, Typography } from "antd";
+import { Input, Row, Tooltip, Typography, message } from "antd";
 import Icon from "@ant-design/icons";
 
 import AppButton from "../../components/Buttons/AppButton";
@@ -12,12 +12,85 @@ import SendIcon from "../../icons/send";
 import AppLink from "../../components/AppLink/AppLink";
 import AppAlert from "../../components/AppAlert/AppAlert";
 import ReloadIcon from "../../icons/reload";
+import { useEffect, useState } from "react";
+import { appConstants } from "../../constants/appContants";
+import { agent } from "../../api/agent";
+import { TicketComment } from "../../models/ticket-comment";
+import { DraftRequest } from "../../models/extension-requests";
+import StopIcon from "../../icons/stop";
 
 interface Props {
   onReturn: () => void;
+  tickets: TicketComment[];
 }
 
-export default function DraftGeneration({ onReturn }: Props) {
+export default function DraftGeneration({ onReturn, tickets }: Props) {
+  const [sessionId, setSessionId] = useState("");
+  const [isDraftGenerated, setIsDraftGenerated] = useState<boolean>(false);
+  const [isDraftStarted, setIsDraftStarted] = useState(false);
+  const [stopDraft, setStopDraft] = useState(false);
+  const [draft, setDraft] = useState("");
+
+  const startDrafting = async () => {
+    try {
+      setDraft("");
+      const sessionIdResponse = await agent.Extension.getSessionId();
+      setSessionId(sessionIdResponse.session_id);
+
+      const body = {
+        ticket_comments: tickets,
+        session_id: sessionIdResponse.session_id,
+        existing_draft: "",
+      } as DraftRequest;
+
+      const res = await agent.Extension.startDraft(body);
+      setDraft(res.Content);
+      if (!res.Done) {
+        setIsDraftStarted(true);
+      } else {
+        setIsDraftGenerated(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    startDrafting();
+  }, []);
+
+  useEffect(() => {
+    async function completeDraft() {
+      if (!sessionId) return;
+
+      try {
+        while (true && !stopDraft) {
+          const response = await agent.Extension.getDraftStatus(sessionId);
+          if (response.Done) break;
+
+          setDraft(draft + response.Content);
+        }
+      } catch (error) {
+        console.log(error);
+        message.error(appConstants.draftGenerateError);
+        setIsDraftGenerated(true);
+      }
+    }
+
+    completeDraft();
+  }, [isDraftStarted]);
+
+  const handleStopOrRegenerate = () => {
+    if (isDraftGenerated) {
+      setStopDraft(false);
+      setIsDraftGenerated(false);
+      startDrafting();
+    } else {
+      setStopDraft(true);
+      setIsDraftGenerated(true);
+    }
+  };
+
   const sendIcon = <Icon component={SendIcon} style={{ width: 15 }} />;
 
   return (
@@ -38,9 +111,10 @@ export default function DraftGeneration({ onReturn }: Props) {
           </Tooltip>
         </Row>
         <AppButton
-          icon={<Icon component={ReloadIcon} />}
+          icon={<Icon component={isDraftGenerated ? ReloadIcon : StopIcon} />}
           colorType={colorTypes.gray}
           textColor={colors.gray[500]}
+          onClick={handleStopOrRegenerate}
           style={{
             padding: "5px 10px",
             height: 30,
@@ -48,14 +122,23 @@ export default function DraftGeneration({ onReturn }: Props) {
             marginTop: -5,
           }}
         >
-          Regenerate
+          {isDraftGenerated ? "Regenerate" : "Stop generating"}
         </AppButton>
       </Row>
       <Row className="mt-sm">
-        <Input.TextArea rows={6} style={{ color: colors.gray[400] }} />
+        <Input.TextArea
+          rows={6}
+          value={draft}
+          style={{ color: colors.gray[400], resize: "none" }}
+        />
       </Row>
       <Row className="mt-sm">
-        <AppButton type="primary" colorType={colorTypes.green} icon={sendIcon}>
+        <AppButton
+          type="primary"
+          colorType={colorTypes.green}
+          icon={sendIcon}
+          disabled={!isDraftGenerated}
+        >
           Insert Draft
         </AppButton>
         <AppButton
@@ -63,6 +146,7 @@ export default function DraftGeneration({ onReturn }: Props) {
           colorType={colorTypes.blue}
           icon={<CopyOutlined />}
           style={{ marginLeft: 10 }}
+          disabled={!isDraftGenerated}
         >
           Copy
         </AppButton>

@@ -12,7 +12,7 @@ import Icon from "@ant-design/icons/lib/components/Icon";
 import ReloadIcon from "../../icons/reload";
 
 function DraftPage() {
-  const [isDraftGenerating, setIsDraftGenerating] = useState(false);
+  const [generateDraft, setGenerateDraft] = useState(false);
   const [tickets, setTickets] = useState<TicketComment[]>([]);
 
   const handleTicketsRefresh = () => {
@@ -30,16 +30,15 @@ function DraftPage() {
 
       const result: TicketComment[] = [];
       for (let i = 0; i < senderNamesElements.length; i++) {
-        const title = senderNamesElements[i]?.textContent ?? "";
-        const details = commentElements[i]?.textContent ?? "";
-        result.push({ title, details });
+        const name = senderNamesElements[i]?.textContent ?? "";
+        const comment = commentElements[i]?.textContent ?? "";
+        result.push({ name, comment });
       }
       return result;
     }
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
-      const currentTicketNumber = getCurrentTicketNumber(activeTab.url!);
       if (activeTab && isZendeskTicketURL(activeTab.url!)) {
         chrome.scripting
           .executeScript({
@@ -68,8 +67,13 @@ function DraftPage() {
     return pathnameParts[pathnameParts.length - 1];
   }
 
-  if (isDraftGenerating) {
-    return <DraftGeneration onReturn={() => setIsDraftGenerating(false)} />;
+  if (generateDraft) {
+    return (
+      <DraftGeneration
+        tickets={tickets}
+        onReturn={() => setGenerateDraft(false)}
+      />
+    );
   }
 
   return (
@@ -112,7 +116,8 @@ function DraftPage() {
         type="primary"
         icon={<FormOutlined />}
         className="mt-md"
-        onClick={() => setIsDraftGenerating(true)}
+        disabled={tickets.length === 0}
+        onClick={() => setGenerateDraft(true)}
       >
         Write Draft
       </AppButton>

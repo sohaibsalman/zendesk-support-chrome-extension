@@ -1,4 +1,4 @@
 export interface TicketComment {
-  title: string;
-  details: string;
+  name: string;
+  comment: string;
 }

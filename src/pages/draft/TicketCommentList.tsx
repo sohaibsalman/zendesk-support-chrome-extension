@@ -8,10 +8,10 @@ interface Props {
 export default function TicketCommentList({ data }: Props) {
   const renderedTickets = data.map((item, i) => (
     <Card
-      title={item.title}
+      title={item.name}
       style={{ marginBottom: 10, borderColor: "#D0D0D1" }}
     >
-      <Typography.Paragraph>{item.details}</Typography.Paragraph>
+      <Typography.Paragraph>{item.comment}</Typography.Paragraph>
     </Card>
   ));
 

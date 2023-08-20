@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { getAccessToken } from "../services/storage";
 import {
   DraftRequest,
+  DraftResponse,
   SessionIdResponse,
   SettingsResponse,
   SettingsUpdateRequest,
@@ -31,8 +32,10 @@ const Extension = {
   updateSettings: (settings: SettingsUpdateRequest) =>
     requests.put("/settings", settings),
   getSessionId: () => requests.get<SessionIdResponse>("/session"),
-  startDraft: (draft: DraftRequest) => requests.post("/draft", draft),
-  getDraftStatus: (sessionId: string) => requests.get(`/draft/${sessionId}`),
+  startDraft: (draft: DraftRequest) =>
+    requests.post<DraftResponse>("/draft", draft),
+  getDraftStatus: (sessionId: string) =>
+    requests.get<DraftResponse>(`/draft/${sessionId}`),
 };
 
 export const agent = {
