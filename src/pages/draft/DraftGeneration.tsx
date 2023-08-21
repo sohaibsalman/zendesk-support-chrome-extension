@@ -18,6 +18,7 @@ import { agent } from "../../api/agent";
 import { TicketComment } from "../../models/ticket-comment";
 import { DraftRequest } from "../../models/extension-requests";
 import StopIcon from "../../icons/stop";
+import TypeAnimation from "../../components/TypeAnimation/TypeAnimation";
 
 interface Props {
   onReturn: () => void;
@@ -68,7 +69,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
           const response = await agent.Extension.getDraftStatus(sessionId);
           if (response.Done) break;
 
-          setDraft(draft + response.Content);
+          setDraft((prevDraft) => prevDraft + response.Content);
         }
       } catch (error) {
         console.log(error);
@@ -126,11 +127,23 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         </AppButton>
       </Row>
       <Row className="mt-sm">
-        <Input.TextArea
+        {/* <Input.TextArea
           rows={6}
           value={draft}
           style={{ color: colors.gray[400], resize: "none" }}
-        />
+        /> */}
+        <div
+          style={{
+            color: colors.gray[400],
+            height: 150,
+            padding: "14px 16px",
+            border: `1px solid ${colors.gray[300]}`,
+            width: "100%",
+            overflow: "auto",
+          }}
+        >
+          <TypeAnimation response={draft} />
+        </div>
       </Row>
       <Row className="mt-sm">
         <AppButton

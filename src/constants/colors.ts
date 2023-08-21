@@ -25,6 +25,7 @@ export const colors = {
     pressed: "#30508C",
   },
   gray: {
+    300: "#AEAEB2",
     400: "#86878A",
     500: "#5B5B5F",
     900: "#1E1E1F",
