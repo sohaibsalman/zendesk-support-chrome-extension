@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   CheckOutlined,
+  CloseOutlined,
   InfoCircleOutlined,
   SaveOutlined,
 } from "@ant-design/icons";
@@ -22,13 +23,14 @@ import {
 function SettingPage() {
   const [settingsState, setSettingsState] = useState<SettingsResponse>();
   const [defaultDraftTemplate, setDefaultDraftTemplate] = useState("");
-  const [helpCenterUrl, setHelpCenterUrl] = useState<boolean | null>(null);
+  const [isValidUrl, setIsValidUrl] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getSettings() {
       try {
         const settings = await agent.Extension.getSettings();
+        validateUrl(settings.crawl_url);
         setSettingsState(settings);
         setDefaultDraftTemplate(settings.draft_template);
       } catch (error) {
@@ -62,8 +64,21 @@ function SettingPage() {
     });
   };
 
+  const validateUrl = (url: string) => {
+    setIsValidUrl(null);
+    setTimeout(() => {
+      const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+      setIsValidUrl(urlPattern.test(url));
+    }, 1000);
+  };
+
   const renderedHelpCenterUrlState =
-    helpCenterUrl === null ? null : helpCenterUrl ? (
+    isValidUrl === null ? (
+      <div className="d-flex align-items-center" style={{ marginLeft: 10 }}>
+        <Icon component={ProcesingIcon} style={{ marginRight: 5, width: 20 }} />
+        Processing
+      </div>
+    ) : isValidUrl ? (
       <div
         className="d-flex align-items-center"
         style={{ marginLeft: 10, color: colors.green.default }}
@@ -71,9 +86,12 @@ function SettingPage() {
         <CheckOutlined style={{ marginRight: 5, fontSize: 20 }} /> Available
       </div>
     ) : (
-      <div className="d-flex align-items-center" style={{ marginLeft: 10 }}>
-        <Icon component={ProcesingIcon} style={{ marginRight: 5, width: 20 }} />
-        Processing
+      <div
+        className="d-flex align-items-center"
+        style={{ marginLeft: 10, color: colors.error[600] }}
+      >
+        <CloseOutlined style={{ marginRight: 5, fontSize: 20 }} />
+        Not Available
       </div>
     );
 
@@ -93,7 +111,10 @@ function SettingPage() {
           name="crawl_url"
           value={settingsState?.crawl_url}
           style={{ width: "50%", flexGrow: 1 }}
-          onChange={(event) => handleSettingStateChange(event)}
+          onChange={(event) => {
+            validateUrl(event.target.value);
+            handleSettingStateChange(event);
+          }}
         />
         {renderedHelpCenterUrlState}
       </Row>

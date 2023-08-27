@@ -59,6 +59,8 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
     } catch (error) {
       console.log(error);
       message.error(appConstants.draftGenerateError);
+    } finally {
+      setIsDraftGenerated(true);
     }
   };
 
