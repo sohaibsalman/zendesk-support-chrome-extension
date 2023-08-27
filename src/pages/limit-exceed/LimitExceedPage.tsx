@@ -22,7 +22,7 @@ export function LimitExceedPage({ onReturn }: Props) {
       </AppButton>
       <div
         className="d-flex flex-direction-col align-items-center"
-        style={{ width: "70%", margin: "0 auto", paddingTop: 20 }}
+        style={{ width: "79%", margin: "0 auto", paddingTop: 20 }}
       >
         <img
           src="./assets/images/limit.svg"

@@ -60,7 +60,6 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
       console.log(error);
       message.error(appConstants.draftGenerateError);
     }
-    setIsDraftGenerated(true);
   };
 
   useEffect(() => {
@@ -77,6 +76,15 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
       setIsDraftGenerated(true);
     }
   };
+
+  function copyToClipboard() {
+    const textarea = document.createElement("textarea");
+    textarea.value = draft;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
 
   const sendIcon = <Icon component={SendIcon} style={{ width: 15 }} />;
 
@@ -119,7 +127,11 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
       <Row className="mt-sm">
         <ScrollToBottom className="scrolling-div ">
           {draft.length > 0 ? (
-            <TypeAnimation response={draft} />
+            <TypeAnimation
+              response={draft}
+              stopGeneration={stopDraft}
+              isGenerating={!isDraftGenerated}
+            />
           ) : (
             <div>...</div>
           )}
@@ -140,6 +152,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
           icon={<CopyOutlined />}
           style={{ marginLeft: 10 }}
           disabled={!isDraftGenerated}
+          onClick={copyToClipboard}
         >
           Copy
         </AppButton>

@@ -2,15 +2,23 @@ import React, { useState, useEffect } from "react";
 
 interface TypingAnimationProps {
   response: string;
+  stopGeneration: boolean;
+  isGenerating: boolean;
 }
 
-const TypingAnimation: React.FC<TypingAnimationProps> = ({ response }) => {
+const TypingAnimation: React.FC<TypingAnimationProps> = ({
+  response,
+  stopGeneration,
+  isGenerating,
+}) => {
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
     const typingInterval = setInterval(() => {
+      if (stopGeneration) return () => clearInterval(typingInterval);
+
       const currentResponsePart = response.slice(0, currentPartIndex + 1);
 
       if (currentPartIndex === response.length - 1) {
@@ -24,7 +32,9 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ response }) => {
     return () => clearInterval(typingInterval);
   }, [response, currentPartIndex]);
 
-  return <span>{isTyping ? `${typedText}|` : typedText}</span>;
+  return (
+    <span>{!isTyping && isGenerating ? `${typedText}...` : typedText}</span>
+  );
 };
 
 export default TypingAnimation;
