@@ -6,6 +6,7 @@ import {
   SessionIdResponse,
   SettingsResponse,
   SettingsUpdateRequest,
+  StartDraftResponse,
 } from "../models/extension-requests";
 
 axios.defaults.baseURL =
@@ -32,7 +33,8 @@ const Extension = {
   updateSettings: (settings: SettingsUpdateRequest) =>
     requests.put("/settings", settings),
   getSessionId: () => requests.get<SessionIdResponse>("/session"),
-  startDraft: (draft: DraftRequest) => requests.post<void>("/draft", draft),
+  startDraft: (draft: DraftRequest) =>
+    requests.post<StartDraftResponse>("/draft", draft),
   getDraftStatus: (sessionId: string) =>
     requests.get<DraftResponse>(`/draft/${sessionId}`),
 };

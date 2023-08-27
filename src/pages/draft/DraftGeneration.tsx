@@ -20,6 +20,7 @@ import { TicketComment } from "../../models/ticket-comment";
 import { DraftRequest } from "../../models/extension-requests";
 import StopIcon from "../../icons/stop";
 import TypeAnimation from "../../components/TypeAnimation/TypeAnimation";
+import { LimitExceedPage } from "../limit-exceed/LimitExceedPage";
 
 interface Props {
   onReturn: () => void;
@@ -30,6 +31,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
   const [isDraftGenerated, setIsDraftGenerated] = useState<boolean>(false);
   const [stopDraft, setStopDraft] = useState(false);
   const [draft, setDraft] = useState("");
+  const [isLimitReached, setIsLimitReached] = useState(false);
 
   const startDrafting = async () => {
     try {
@@ -42,13 +44,17 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         existing_draft: "",
       } as DraftRequest;
 
-      await agent.Extension.startDraft(body);
+      const draftStartRes = await agent.Extension.startDraft(body);
 
-      while (true && !stopDraft) {
-        const response = await agent.Extension.getDraftStatus(session_id);
-        setDraft((prevDraft) => prevDraft + response.content);
+      if (draftStartRes?.Limit) {
+        setIsLimitReached(true);
+      } else {
+        while (true && !stopDraft) {
+          const response = await agent.Extension.getDraftStatus(session_id);
+          setDraft((prevDraft) => prevDraft + response.content);
 
-        if (response.done) break;
+          if (response.done) break;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -73,6 +79,10 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
   };
 
   const sendIcon = <Icon component={SendIcon} style={{ width: 15 }} />;
+
+  if (isLimitReached) {
+    return <LimitExceedPage onReturn={onReturn} />;
+  }
 
   return (
     <>
