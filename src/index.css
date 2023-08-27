@@ -57,3 +57,13 @@ body, .ant-btn, .ant-tabs, .ant-typography, .ant-input {
 .ant-tabs-ink-bar {
     background-color: transparent !important;
 }
+
+.scrolling-div {
+    color: #86878A;
+    height: 150px;
+    padding: 14px 16px;
+    border: 1px solid #AEAEB2;
+    width: 100%;
+    overflow: auto;
+    white-space: pre-wrap;
+}

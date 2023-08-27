@@ -22,11 +22,20 @@ export interface DraftRequest {
 }
 
 export interface DraftResponse {
+  confidence: string;
+  content: string;
+  done: boolean;
+  question: string;
+  sources: any;
+}
+
+export interface StartDraftResponse {
   Confidence: string;
   Content: string;
   Done: boolean;
   Question: string;
   Sources: any;
+  Limit: boolean;
 }
 
 interface Tickets {

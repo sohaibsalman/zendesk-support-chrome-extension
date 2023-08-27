@@ -20,8 +20,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ response }) => {
         setTypedText(currentResponsePart);
         setCurrentPartIndex(currentPartIndex + 1);
       }
-    }, 20);
-
+    }, 15);
     return () => clearInterval(typingInterval);
   }, [response, currentPartIndex]);
 

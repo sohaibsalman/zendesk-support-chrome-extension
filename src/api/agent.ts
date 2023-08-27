@@ -32,8 +32,7 @@ const Extension = {
   updateSettings: (settings: SettingsUpdateRequest) =>
     requests.put("/settings", settings),
   getSessionId: () => requests.get<SessionIdResponse>("/session"),
-  startDraft: (draft: DraftRequest) =>
-    requests.post<DraftResponse>("/draft", draft),
+  startDraft: (draft: DraftRequest) => requests.post<void>("/draft", draft),
   getDraftStatus: (sessionId: string) =>
     requests.get<DraftResponse>(`/draft/${sessionId}`),
 };

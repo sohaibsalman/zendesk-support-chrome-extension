@@ -3,8 +3,9 @@ import {
   CopyOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Input, Row, Tooltip, Typography, message } from "antd";
+import { Row, Tooltip, Typography, message } from "antd";
 import Icon from "@ant-design/icons";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 import AppButton from "../../components/Buttons/AppButton";
 import { colorTypes, colors } from "../../constants/colors";
@@ -26,60 +27,39 @@ interface Props {
 }
 
 export default function DraftGeneration({ onReturn, tickets }: Props) {
-  const [sessionId, setSessionId] = useState("");
   const [isDraftGenerated, setIsDraftGenerated] = useState<boolean>(false);
-  const [isDraftStarted, setIsDraftStarted] = useState(false);
   const [stopDraft, setStopDraft] = useState(false);
   const [draft, setDraft] = useState("");
 
   const startDrafting = async () => {
     try {
       setDraft("");
-      const sessionIdResponse = await agent.Extension.getSessionId();
-      setSessionId(sessionIdResponse.session_id);
+      const { session_id } = await agent.Extension.getSessionId();
 
       const body = {
         ticket_comments: tickets,
-        session_id: sessionIdResponse.session_id,
+        session_id: session_id,
         existing_draft: "",
       } as DraftRequest;
 
-      const res = await agent.Extension.startDraft(body);
-      setDraft(res.Content);
-      if (!res.Done) {
-        setIsDraftStarted(true);
-      } else {
-        setIsDraftGenerated(true);
+      await agent.Extension.startDraft(body);
+
+      while (true && !stopDraft) {
+        const response = await agent.Extension.getDraftStatus(session_id);
+        setDraft((prevDraft) => prevDraft + response.content);
+
+        if (response.done) break;
       }
     } catch (error) {
       console.log(error);
+      message.error(appConstants.draftGenerateError);
     }
+    setIsDraftGenerated(true);
   };
 
   useEffect(() => {
     startDrafting();
   }, []);
-
-  useEffect(() => {
-    async function completeDraft() {
-      if (!sessionId) return;
-
-      try {
-        while (true && !stopDraft) {
-          const response = await agent.Extension.getDraftStatus(sessionId);
-          if (response.Done) break;
-
-          setDraft((prevDraft) => prevDraft + response.Content);
-        }
-      } catch (error) {
-        console.log(error);
-        message.error(appConstants.draftGenerateError);
-        setIsDraftGenerated(true);
-      }
-    }
-
-    completeDraft();
-  }, [isDraftStarted]);
 
   const handleStopOrRegenerate = () => {
     if (isDraftGenerated) {
@@ -127,23 +107,13 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         </AppButton>
       </Row>
       <Row className="mt-sm">
-        {/* <Input.TextArea
-          rows={6}
-          value={draft}
-          style={{ color: colors.gray[400], resize: "none" }}
-        /> */}
-        <div
-          style={{
-            color: colors.gray[400],
-            height: 150,
-            padding: "14px 16px",
-            border: `1px solid ${colors.gray[300]}`,
-            width: "100%",
-            overflow: "auto",
-          }}
-        >
-          <TypeAnimation response={draft} />
-        </div>
+        <ScrollToBottom className="scrolling-div ">
+          {draft.length > 0 ? (
+            <TypeAnimation response={draft} />
+          ) : (
+            <div>...</div>
+          )}
+        </ScrollToBottom>
       </Row>
       <Row className="mt-sm">
         <AppButton
