@@ -1,7 +1,9 @@
 import { Tabs } from "antd";
 import { FileOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-import { AccountPage, DraftPage, SettingPage } from "../../pages";
+
+import { DraftPage, SettingPage } from "../../pages";
 import Container from "../Container/Container";
+import { appConstants } from "../../constants/appContants";
 
 const links = [
   {
@@ -17,7 +19,7 @@ const links = [
   {
     label: "Account",
     icon: <UserOutlined />,
-    component: <AccountPage />,
+    component: <></>,
   },
 ];
 
@@ -44,7 +46,18 @@ function AppNavigation() {
         width: "100%",
       }}
     >
-      <Tabs items={renderedTabItems} tabPosition="bottom" size="small" />
+      <Tabs
+        items={renderedTabItems}
+        tabPosition="bottom"
+        size="small"
+        onTabClick={(key) => {
+          if (key === "Account") {
+            chrome.tabs.create({
+              url: appConstants.webAppUrl,
+            });
+          }
+        }}
+      />
     </div>
   );
 }
