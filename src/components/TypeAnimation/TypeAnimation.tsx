@@ -4,12 +4,14 @@ interface TypingAnimationProps {
   response: string;
   stopGeneration: boolean;
   isGenerating: boolean;
+  onComplete: () => void;
 }
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({
   response,
   stopGeneration,
   isGenerating,
+  onComplete,
 }) => {
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
@@ -24,6 +26,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
       if (currentPartIndex === response.length - 1) {
         clearInterval(typingInterval);
         setIsTyping(false);
+        onComplete();
       } else {
         setTypedText(currentResponsePart);
         setCurrentPartIndex(currentPartIndex + 1);

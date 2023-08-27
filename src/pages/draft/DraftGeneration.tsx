@@ -59,20 +59,21 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
     } catch (error) {
       console.log(error);
       message.error(appConstants.draftGenerateError);
-    } finally {
-      setIsDraftGenerated(true);
     }
   };
 
   useEffect(() => {
-    startDrafting();
-  }, []);
+    if (!stopDraft) startDrafting();
+  }, [stopDraft]);
 
   const handleStopOrRegenerate = () => {
     if (isDraftGenerated) {
-      setStopDraft(false);
       setIsDraftGenerated(false);
-      startDrafting();
+      if (stopDraft) {
+        setStopDraft(false);
+      } else {
+        startDrafting();
+      }
     } else {
       setStopDraft(true);
       setIsDraftGenerated(true);
@@ -133,6 +134,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
               response={draft}
               stopGeneration={stopDraft}
               isGenerating={!isDraftGenerated}
+              onComplete={() => setIsDraftGenerated(true)}
             />
           ) : (
             <div>...</div>
