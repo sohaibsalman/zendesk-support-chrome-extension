@@ -2,6 +2,7 @@ import {
   ArrowLeftOutlined,
   CopyOutlined,
   InfoCircleOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import { Row, Tooltip, Typography, message } from "antd";
 import Icon from "@ant-design/icons";
@@ -9,7 +10,6 @@ import ScrollToBottom from "react-scroll-to-bottom";
 
 import AppButton from "../../components/Buttons/AppButton";
 import { colorTypes, colors } from "../../constants/colors";
-import SendIcon from "../../icons/send";
 import AppLink from "../../components/AppLink/AppLink";
 import AppAlert from "../../components/AppAlert/AppAlert";
 import ReloadIcon from "../../icons/reload";
@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { appConstants } from "../../constants/appContants";
 import { agent } from "../../api/agent";
 import { TicketComment } from "../../models/ticket-comment";
-import { DraftRequest } from "../../models/extension-requests";
+import { DraftRequest, SourceLink } from "../../models/extension-requests";
 import StopIcon from "../../icons/stop";
 import TypeAnimation from "../../components/TypeAnimation/TypeAnimation";
 import { LimitExceedPage } from "../limit-exceed/LimitExceedPage";
@@ -32,6 +32,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
   const [stopDraft, setStopDraft] = useState(false);
   const [draft, setDraft] = useState("");
   const [isLimitReached, setIsLimitReached] = useState(false);
+  const [sourceLinks, setSourceLinks] = useState<SourceLink[]>([]);
 
   const startDrafting = async () => {
     try {
@@ -52,6 +53,9 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         while (true && !stopDraft) {
           const response = await agent.Extension.getDraftStatus(session_id);
           setDraft((prevDraft) => prevDraft + response.content);
+          if (sourceLinks.length === 0) {
+            setSourceLinks(response.sources);
+          }
 
           if (response.done) break;
         }
@@ -88,8 +92,6 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
     document.execCommand("copy");
     document.body.removeChild(textarea);
   }
-
-  const sendIcon = <Icon component={SendIcon} style={{ width: 15 }} />;
 
   if (isLimitReached) {
     return <LimitExceedPage onReturn={onReturn} />;
@@ -145,7 +147,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         <AppButton
           type="primary"
           colorType={colorTypes.green}
-          icon={sendIcon}
+          icon={<SendOutlined style={{ rotate: "-35deg", fontSize: 16 }} />}
           disabled={!isDraftGenerated}
         >
           Insert Draft
@@ -171,9 +173,9 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
         </Tooltip>
       </Row>
       <Row className="mt-sm">
-        <AppLink />
-        <AppLink />
-        <AppLink />
+        {sourceLinks.map((link) => (
+          <AppLink title={link.title} href={link.link} />
+        ))}
       </Row>
       <Row className="mb-md">
         <AppAlert type="warning">

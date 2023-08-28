@@ -4,7 +4,12 @@ import { Typography } from "antd";
 import LinkIcon from "../../icons/link";
 import { colors } from "../../constants/colors";
 
-export default function AppLink() {
+interface Props {
+  title: string;
+  href: string;
+}
+
+export default function AppLink({ title, href }: Props) {
   return (
     <div
       style={{
@@ -13,12 +18,18 @@ export default function AppLink() {
         borderRadius: 50,
         marginRight: 5,
         marginBottom: 10,
+        cursor: "pointer",
+      }}
+      onClick={() => {
+        chrome.tabs.create({
+          url: href,
+        });
       }}
     >
       <Icon component={LinkIcon} style={{ marginRight: 5 }} />
-      <Typography.Link style={{ fontSize: 12, color: colors.gray[900] }}>
-        Help Center Link Article
-      </Typography.Link>
+      <Typography.Text style={{ fontSize: 12, color: colors.gray[900] }}>
+        {title}
+      </Typography.Text>
     </div>
   );
 }

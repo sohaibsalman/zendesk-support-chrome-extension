@@ -26,7 +26,7 @@ export interface DraftResponse {
   content: string;
   done: boolean;
   question: string;
-  sources: any;
+  sources: SourceLink[];
 }
 
 export interface StartDraftResponse {
@@ -34,11 +34,17 @@ export interface StartDraftResponse {
   Content: string;
   Done: boolean;
   Question: string;
-  Sources: any;
+  Sources: SourceLink[];
   Limit: boolean;
 }
 
 interface Tickets {
   name: string;
   comment: string;
+}
+
+export interface SourceLink {
+  link: string;
+  snippet: string;
+  title: string;
 }
