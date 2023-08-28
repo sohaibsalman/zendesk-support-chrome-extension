@@ -11,11 +11,11 @@ function AppButton(props: Props) {
   let color = colors.purple;
 
   if (colorType === colorTypes.purple) color = colors.purple;
-  else if (colorType === colorTypes.yellow) color = colors.yellow;
-  else if (colorType === colorTypes.gray) color = colors.grayed;
-  else if (colorType === colorTypes.green) color = colors.green;
-  else if (colorType === colorTypes.blue) color = colors.blue;
-  else if (props.disabled) color = colors.disabled;
+  if (colorType === colorTypes.yellow) color = colors.yellow;
+  if (colorType === colorTypes.gray) color = colors.grayed;
+  if (colorType === colorTypes.green) color = colors.green;
+  if (colorType === colorTypes.blue) color = colors.blue;
+  if (props.disabled) color = colors.disabled;
 
   const theme: ThemeConfig = {
     components: {
@@ -26,6 +26,7 @@ function AppButton(props: Props) {
         colorPrimaryActive: color.pressed,
         colorText: color.default,
         controlHeight: 40,
+        colorBgContainerDisabled: color.default,
       },
     },
   };

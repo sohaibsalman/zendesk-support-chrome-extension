@@ -25,9 +25,14 @@ import { LimitExceedPage } from "../limit-exceed/LimitExceedPage";
 interface Props {
   onReturn: () => void;
   tickets: TicketComment[];
+  instructions: string;
 }
 
-export default function DraftGeneration({ onReturn, tickets }: Props) {
+export default function DraftGeneration({
+  onReturn,
+  tickets,
+  instructions,
+}: Props) {
   const [isDraftGenerated, setIsDraftGenerated] = useState<boolean>(false);
   const [stopDraft, setStopDraft] = useState(false);
   const [draft, setDraft] = useState("");
@@ -42,7 +47,7 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
       const body = {
         ticket_comments: tickets,
         session_id: session_id,
-        existing_draft: "",
+        existing_draft: instructions ?? "",
       } as DraftRequest;
 
       const draftStartRes = await agent.Extension.startDraft(body);
@@ -163,20 +168,25 @@ export default function DraftGeneration({ onReturn, tickets }: Props) {
           Copy
         </AppButton>
       </Row>
-      <Row
-        className="mb-xs mt-md"
-        style={{ flexGrow: 1, alignItems: "center" }}
-      >
-        <Typography.Title level={5}>Top Sources</Typography.Title>
-        <Tooltip placement="right" title="What is Help Center URL? ">
-          <InfoCircleOutlined style={infoIconStyles} />
-        </Tooltip>
-      </Row>
-      <Row className="mt-sm">
-        {sourceLinks.map((link) => (
-          <AppLink title={link.title} href={link.link} />
-        ))}
-      </Row>
+      {sourceLinks.length > 0 ? (
+        <>
+          <Row
+            className="mb-xs mt-md"
+            style={{ flexGrow: 1, alignItems: "center" }}
+          >
+            <Typography.Title level={5}>Top Sources</Typography.Title>
+            <Tooltip placement="right" title="What is Help Center URL? ">
+              <InfoCircleOutlined style={infoIconStyles} />
+            </Tooltip>
+          </Row>
+          <Row className="mt-sm">
+            {sourceLinks.map((link) => (
+              <AppLink title={link.title} href={link.link} />
+            ))}
+          </Row>
+        </>
+      ) : null}
+
       <Row className="mb-md">
         <AppAlert type="warning">
           <>

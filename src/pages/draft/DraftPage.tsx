@@ -13,6 +13,7 @@ import ReloadIcon from "../../icons/reload";
 
 function DraftPage() {
   const [generateDraft, setGenerateDraft] = useState(false);
+  const [instructions, setInstructions] = useState("");
   const [tickets, setTickets] = useState<TicketComment[]>([]);
 
   const handleTicketsRefresh = () => {
@@ -70,6 +71,7 @@ function DraftPage() {
   if (generateDraft) {
     return (
       <DraftGeneration
+        instructions={instructions}
         tickets={tickets}
         onReturn={() => setGenerateDraft(false)}
       />
@@ -110,7 +112,12 @@ function DraftPage() {
         </Row>
       </Row>
       <Row>
-        <Input placeholder="Type instructions here..." />
+        <Input
+          placeholder="Type instructions here..."
+          onChange={(event) => {
+            setInstructions(event.target.value);
+          }}
+        />
       </Row>
       <AppButton
         type="primary"
