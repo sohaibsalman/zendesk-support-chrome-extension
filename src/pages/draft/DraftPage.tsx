@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { Input, Row, Tooltip, Typography, message } from "antd";
 
@@ -15,6 +15,10 @@ function DraftPage() {
   const [generateDraft, setGenerateDraft] = useState(false);
   const [instructions, setInstructions] = useState("");
   const [tickets, setTickets] = useState<TicketComment[]>([]);
+
+  useEffect(() => {
+    handleTicketsRefresh();
+  }, []);
 
   const handleTicketsRefresh = () => {
     function extractData(ticketId: string) {

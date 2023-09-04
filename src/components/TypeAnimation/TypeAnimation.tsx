@@ -23,7 +23,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
 
       const currentResponsePart = response.slice(0, currentPartIndex + 1);
 
-      if (currentPartIndex === response.length - 1) {
+      if (currentPartIndex === response.length) {
         clearInterval(typingInterval);
         setIsTyping(false);
         onComplete();

@@ -3,4 +3,8 @@ const getAccessToken = async () => {
   return token.access_token;
 };
 
-export { getAccessToken };
+const removeAccessToken = async () => {
+  return chrome.storage.local.remove("access_token");
+};
+
+export { getAccessToken, removeAccessToken };

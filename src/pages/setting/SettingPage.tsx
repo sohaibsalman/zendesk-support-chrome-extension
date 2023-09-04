@@ -19,10 +19,11 @@ import {
   SettingsResponse,
   SettingsUpdateRequest,
 } from "../../models/extension-requests";
+import { AxiosError } from "axios";
+import { removeAccessToken } from "../../services/storage";
 
 function SettingPage() {
   const [settingsState, setSettingsState] = useState<SettingsResponse>();
-  const [defaultDraftTemplate, setDefaultDraftTemplate] = useState("");
   const [isValidUrl, setIsValidUrl] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,9 +33,11 @@ function SettingPage() {
         const settings = await agent.Extension.getSettings();
         validateUrl(settings.crawl_url);
         setSettingsState(settings);
-        setDefaultDraftTemplate(settings.draft_template);
       } catch (error) {
-        console.log(error);
+        const err = error as AxiosError;
+        if (err.response?.status === 401) {
+          await removeAccessToken();
+        }
       }
     }
 
@@ -133,7 +136,7 @@ function SettingPage() {
             onClick={() =>
               setSettingsState({
                 ...(settingsState as SettingsResponse),
-                draft_template: defaultDraftTemplate,
+                draft_template: "",
               })
             }
             style={{

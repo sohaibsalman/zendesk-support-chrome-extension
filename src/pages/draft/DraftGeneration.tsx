@@ -2,7 +2,6 @@ import {
   ArrowLeftOutlined,
   CopyOutlined,
   InfoCircleOutlined,
-  SendOutlined,
 } from "@ant-design/icons";
 import { Row, Tooltip, Typography, message } from "antd";
 import Icon from "@ant-design/icons";
@@ -17,10 +16,15 @@ import { useEffect, useState } from "react";
 import { appConstants } from "../../constants/appContants";
 import { agent } from "../../api/agent";
 import { TicketComment } from "../../models/ticket-comment";
-import { DraftRequest, SourceLink } from "../../models/extension-requests";
+import {
+  DraftRequest,
+  SourceLink,
+  StartDraftResponse,
+} from "../../models/extension-requests";
 import StopIcon from "../../icons/stop";
-import TypeAnimation from "../../components/TypeAnimation/TypeAnimation";
 import { LimitExceedPage } from "../limit-exceed/LimitExceedPage";
+import { AxiosError } from "axios";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
 interface Props {
   onReturn: () => void;
@@ -50,25 +54,56 @@ export default function DraftGeneration({
         existing_draft: instructions ?? "",
       } as DraftRequest;
 
-      const draftStartRes = await agent.Extension.startDraft(body);
-
-      if (draftStartRes?.Limit) {
-        setIsLimitReached(true);
-      } else {
-        while (true && !stopDraft) {
-          const response = await agent.Extension.getDraftStatus(session_id);
-          setDraft((prevDraft) => prevDraft + response.content);
-          if (sourceLinks.length === 0) {
-            setSourceLinks(response.sources);
-          }
-
-          if (response.done) break;
-        }
-      }
+      const startDraftRes = agent.Extension.startDraft(body);
+      setTimeout(async () => pollData(session_id, startDraftRes), 1000);
     } catch (error) {
       console.log(error);
       message.error(appConstants.draftGenerateError);
+      setIsDraftGenerated(true);
     }
+  };
+
+  const pollData = async (
+    sessionId: string,
+    startDraftRes: Promise<StartDraftResponse>
+  ) => {
+    let totalRetries = 10;
+    let retryFailed = false;
+    while (true && !stopDraft) {
+      try {
+        const response = await agent.Extension.getDraftStatus(sessionId);
+        setDraft(
+          (prevDraft) =>
+            prevDraft +
+            response.content.substring(
+              prevDraft.length === 0 ? prevDraft.length : prevDraft.length + 1
+            )
+        );
+        if (sourceLinks.length === 0) {
+          setSourceLinks(response.sources);
+        }
+
+        if (response.done) break;
+      } catch (error) {
+        const err = error as AxiosError;
+        if (err.response?.status === 404 && totalRetries === 0) {
+          retryFailed = true;
+          break;
+        } else if (err.response?.status !== 404) {
+          console.log(error);
+          message.error(appConstants.draftGenerateError);
+        }
+        totalRetries = totalRetries - 1;
+      }
+    }
+
+    if (retryFailed) {
+      const res = await startDraftRes;
+      if (res.Limit) {
+        setIsLimitReached(true);
+      }
+    }
+    setIsDraftGenerated(true);
   };
 
   useEffect(() => {
@@ -136,32 +171,16 @@ export default function DraftGeneration({
       </Row>
       <Row className="mt-sm">
         <ScrollToBottom className="scrolling-div ">
-          {draft.length > 0 ? (
-            <TypeAnimation
-              response={draft}
-              stopGeneration={stopDraft}
-              isGenerating={!isDraftGenerated}
-              onComplete={() => setIsDraftGenerated(true)}
-            />
-          ) : (
-            <div>...</div>
-          )}
+          <ReactMarkdown>
+            {isDraftGenerated ? draft : `${draft}...`}
+          </ReactMarkdown>
         </ScrollToBottom>
       </Row>
       <Row className="mt-sm">
         <AppButton
           type="primary"
-          colorType={colorTypes.green}
-          icon={<SendOutlined style={{ rotate: "-35deg", fontSize: 16 }} />}
-          disabled={!isDraftGenerated}
-        >
-          Insert Draft
-        </AppButton>
-        <AppButton
-          type="primary"
           colorType={colorTypes.blue}
           icon={<CopyOutlined />}
-          style={{ marginLeft: 10 }}
           disabled={!isDraftGenerated}
           onClick={copyToClipboard}
         >
