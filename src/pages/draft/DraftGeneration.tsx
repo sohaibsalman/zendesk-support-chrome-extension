@@ -12,7 +12,7 @@ import { colorTypes, colors } from "../../constants/colors";
 import AppLink from "../../components/AppLink/AppLink";
 import AppAlert from "../../components/AppAlert/AppAlert";
 import ReloadIcon from "../../icons/reload";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { appConstants } from "../../constants/appContants";
 import { agent } from "../../api/agent";
 import { TicketComment } from "../../models/ticket-comment";
@@ -38,7 +38,7 @@ export default function DraftGeneration({
   instructions,
 }: Props) {
   const [isDraftGenerated, setIsDraftGenerated] = useState<boolean>(false);
-  const [stopDraft, setStopDraft] = useState(false);
+  const stopDraftRef = useRef(false);
   const [draft, setDraft] = useState("");
   const [isLimitReached, setIsLimitReached] = useState(false);
   const [sourceLinks, setSourceLinks] = useState<SourceLink[]>([]);
@@ -55,7 +55,7 @@ export default function DraftGeneration({
       } as DraftRequest;
 
       const startDraftRes = agent.Extension.startDraft(body);
-      setTimeout(async () => pollData(session_id, startDraftRes), 1000);
+      await pollData(session_id, startDraftRes);
     } catch (error) {
       console.log(error);
       message.error(appConstants.draftGenerateError);
@@ -67,9 +67,9 @@ export default function DraftGeneration({
     sessionId: string,
     startDraftRes: Promise<StartDraftResponse>
   ) => {
-    let totalRetries = 10;
+    let totalRetries = 100;
     let retryFailed = false;
-    while (true && !stopDraft) {
+    while (true && !stopDraftRef.current) {
       try {
         const response = await agent.Extension.getDraftStatus(sessionId);
         setDraft(
@@ -98,28 +98,35 @@ export default function DraftGeneration({
     }
 
     if (retryFailed) {
-      const res = await startDraftRes;
-      if (res.Limit) {
-        setIsLimitReached(true);
+      try {
+        const res = await startDraftRes;
+        if (res.Limit) {
+          setIsLimitReached(true);
+        } else {
+          pollData(sessionId, startDraftRes);
+        }
+      } catch (error) {
+        console.log(error);
+        message.error(appConstants.draftGenerateError);
+        setIsDraftGenerated(true);
       }
     }
     setIsDraftGenerated(true);
   };
 
   useEffect(() => {
-    if (!stopDraft) startDrafting();
-  }, [stopDraft]);
+    if (!stopDraftRef.current) startDrafting();
+  }, [stopDraftRef]);
 
   const handleStopOrRegenerate = () => {
     if (isDraftGenerated) {
       setIsDraftGenerated(false);
-      if (stopDraft) {
-        setStopDraft(false);
-      } else {
-        startDrafting();
+      if (stopDraftRef.current) {
+        stopDraftRef.current = false;
       }
+      startDrafting();
     } else {
-      setStopDraft(true);
+      stopDraftRef.current = true;
       setIsDraftGenerated(true);
     }
   };
