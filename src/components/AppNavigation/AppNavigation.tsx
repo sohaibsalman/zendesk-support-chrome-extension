@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Tabs } from "antd";
 import { FileOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -5,25 +6,29 @@ import { DraftPage, SettingPage } from "../../pages";
 import Container from "../Container/Container";
 import { appConstants } from "../../constants/appContants";
 
-const links = [
-  {
-    label: "Settings",
-    icon: <SettingOutlined />,
-    component: <SettingPage />,
-  },
-  {
-    label: "Draft",
-    icon: <FileOutlined />,
-    component: <DraftPage />,
-  },
-  {
-    label: "Account",
-    icon: <UserOutlined />,
-    component: <></>,
-  },
-];
-
 function AppNavigation() {
+  const [urlStatus, setUrlStatus] = useState<boolean | null>(false);
+
+  const links = [
+    {
+      label: "Settings",
+      icon: <SettingOutlined />,
+      component: (
+        <SettingPage urlStatus={urlStatus} setUrlStatus={setUrlStatus} />
+      ),
+    },
+    {
+      label: "Draft",
+      icon: <FileOutlined />,
+      component: <DraftPage urlStatus={urlStatus} />,
+    },
+    {
+      label: "Account",
+      icon: <UserOutlined />,
+      component: <></>,
+    },
+  ];
+
   const renderedTabItems = links.map((link) => {
     return {
       label: (

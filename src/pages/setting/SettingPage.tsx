@@ -22,16 +22,31 @@ import {
 import { AxiosError } from "axios";
 import { removeAccessToken } from "../../services/storage";
 
-function SettingPage() {
+interface Props {
+  urlStatus: boolean | null;
+  setUrlStatus: (status: boolean | null) => void;
+}
+
+function SettingPage({ urlStatus, setUrlStatus }: Props) {
   const [settingsState, setSettingsState] = useState<SettingsResponse>();
-  const [isValidUrl, setIsValidUrl] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getSettings() {
       try {
         const settings = await agent.Extension.getSettings();
-        validateUrl(settings.crawl_url);
+
+        const isValidUrl = validateUrl(settings.crawl_url);
+        if (!isValidUrl) {
+          setUrlStatus(null);
+        } else if (
+          settings.crawl_url.length > 0 &&
+          settings.crawl_status === "Crawl Completed."
+        ) {
+          setUrlStatus(true);
+        } else {
+          setUrlStatus(false);
+        }
         setSettingsState(settings);
       } catch (error) {
         const err = error as AxiosError;
@@ -68,20 +83,20 @@ function SettingPage() {
   };
 
   const validateUrl = (url: string) => {
-    setIsValidUrl(null);
-    setTimeout(() => {
-      const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
-      setIsValidUrl(urlPattern.test(url));
-    }, 1000);
+    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+    return urlPattern.test(url);
   };
 
   const renderedHelpCenterUrlState =
-    isValidUrl === null ? (
-      <div className="d-flex align-items-center" style={{ marginLeft: 10 }}>
-        <Icon component={ProcesingIcon} style={{ marginRight: 5, width: 20 }} />
-        Processing
+    urlStatus === null ? (
+      <div
+        className="d-flex align-items-center"
+        style={{ marginLeft: 10, color: colors.error[600] }}
+      >
+        <CloseOutlined style={{ marginRight: 5, fontSize: 20 }} />
+        Not Available
       </div>
-    ) : isValidUrl ? (
+    ) : urlStatus ? (
       <div
         className="d-flex align-items-center"
         style={{ marginLeft: 10, color: colors.green.default }}
@@ -89,12 +104,9 @@ function SettingPage() {
         <CheckOutlined style={{ marginRight: 5, fontSize: 20 }} /> Available
       </div>
     ) : (
-      <div
-        className="d-flex align-items-center"
-        style={{ marginLeft: 10, color: colors.error[600] }}
-      >
-        <CloseOutlined style={{ marginRight: 5, fontSize: 20 }} />
-        Not Available
+      <div className="d-flex align-items-center" style={{ marginLeft: 10 }}>
+        <Icon component={ProcesingIcon} style={{ marginRight: 5, width: 20 }} />
+        Processing
       </div>
     );
 

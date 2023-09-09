@@ -11,7 +11,11 @@ import DraftGeneration from "./DraftGeneration";
 import Icon from "@ant-design/icons/lib/components/Icon";
 import ReloadIcon from "../../icons/reload";
 
-function DraftPage() {
+interface Props {
+  urlStatus: boolean | null;
+}
+
+function DraftPage({ urlStatus }: Props) {
   const [generateDraft, setGenerateDraft] = useState(false);
   const [instructions, setInstructions] = useState("");
   const [tickets, setTickets] = useState<TicketComment[]>([]);
@@ -132,12 +136,15 @@ function DraftPage() {
       >
         Write Draft
       </AppButton>
-      <AppAlert type="warning">
-        <>
-          Your Help Center hasn’t finished processing. Drafts will be suboptimal
-          until processing is completed (you will receive an email).
-        </>
-      </AppAlert>
+      {!urlStatus && (
+        <AppAlert type="warning">
+          <>
+            Your Help Center hasn’t finished processing. Drafts will be
+            suboptimal until processing is completed (you will receive an
+            email).
+          </>
+        </AppAlert>
+      )}
     </>
   );
 }
